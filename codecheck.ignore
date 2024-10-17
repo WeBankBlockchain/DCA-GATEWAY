@@ -1,0 +1,11 @@
+*/test/**
+dist/**
+src/main/resources/*
+src/main/java/com/webank/blockchain/dca/gateway/controller/**
+src/main/java/com/webank/chaincache/utils/CommonUtils.java
+src/main/java/com/webank/blockchain/dca/gateway/advice/ExceptionHandleAdvice.java
+src/main/java/com/webank/blockchain/dca/gateway/monitor/WebLogMonitorAspect.java
+src/main/java/com/webank/blockchain/dca/gateway/service/WatermarkApiService.java
+src/main/java/com/webank/blockchain/dca/gateway/service/WatermarkApiServiceImpl.java
+src/main/java/com/webank/blockchain/dca/gateway/aspect/RecordAspect.java
+

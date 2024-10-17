@@ -1,0 +1,111 @@
+buildscript {
+	ext {
+		springBootVersion = '2.7.18'
+	}
+	repositories {
+		maven { url "http://maven.weoa.com/nexus/content/groups/public/"; }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath 'com.github.sherter.googlejavaformatgradleplugin:google-java-format-gradle-plugin:0.9-SNAPSHOT'
+	}
+}
+
+
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'com.github.sherter.google-java-format'
+
+
+group = 'com.webank.blockchain'
+version = '2_2_2'
+sourceCompatibility = '1.8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	//mavenCentral()
+	maven {
+		url "http://maven.weoa.com/nexus/content/groups/public/"
+	}
+	//maven { url "https://maven.aliyun.com/repository/public" }
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework:spring-web:5.3.34'
+
+	implementation 'com.drewnoakes:metadata-extractor:2.18.0'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-json'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	implementation("org.yaml:snakeyaml:2.0")
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.4.2'
+	implementation("org.apache.commons:commons-lang3:3.12.0")
+	implementation 'cn.hutool:hutool-all:5.8.29'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+	implementation("com.google.guava:guava:32.0.0-jre")
+	implementation("com.webank.security.file:FileTypeChecker:1.6.1")
+	implementation 'cn.webank.bsp:encrypt:0.1.0'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// swagger
+	implementation 'io.springfox:springfox-swagger2:2.9.2'
+	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+	implementation 'com.adobe.xmp:xmpcore:6.1.11'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+clean {
+	delete file('dist')
+}
+
+bootJar {
+	destinationDir file('dist')
+	archiveName project.name +'_1779' + '.jar'
+	from('src/main/java'){
+		include '**/*.xml'
+	}
+	exclude '**/*.properties'
+	exclude '**/*.yml'
+	exclude '**/*.xml'
+}
+
+task aomp {
+	doLast {
+		copy {
+			from file('src/main/resources/aomp/logback-spring.xml')
+			from file('src/main/resources/aomp/application.properties')
+			from file('src/main/resources/aomp/').listFiles().findAll{File f -> (f.name.endsWith('.sh'))}
+			into 'dist'
+		}
+	}
+}
+
+task dev {
+	doLast {
+		copy {
+			from file('src/main/resources/application.properties')
+			from file('src/main/resources/logback-spring.xml')
+			into 'dist/'
+		}
+	}
+}
+
+googleJavaFormat {
+	toolVersion = '1.7'
+	options style: 'AOSP'
+	source = sourceSets*.allJava
+	include '**/*.java'
+}

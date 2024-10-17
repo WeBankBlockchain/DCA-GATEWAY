@@ -1,0 +1,1 @@
+INSERT INTO app_info (app_id,app_name,description,capacity) VALUES ('R8KBHASZn1QBJmzhfugi','DCCS','数字内容共创平台',10000)
